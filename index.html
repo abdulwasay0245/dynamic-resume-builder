@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Dynamic Resume Builder with Form</title>
+ <link rel="stylesheet" href="style.css">
+</head>
+<body>
+ <header>
+<h1>Dynamic Resume Builder with Form</h1>
+</header>
+ <main>
+     <section class="form-section">
+ <h2>Fill in Your Information</h2>
+<form id="resume-form">
+ <label for="name">Name:</label>
+<input type="text" id="name" name="name" required>
+ <label for="location">Location:</label>
+<input type="text" id="location" name="location" required>
+ <label for="phone">Phone:</label>
+ <input type="tel" id="phone" name="phone" required>
+<label for="email">Email:</label>
+<input type="email" id="email" name="email" required>
+ <label for="job-title">Job Title:</label>
+<input type="text" id="job-title" name="job-title" required>
+           <label for="company">Company:</label>
+   <input type="text" id="company" name="company" required>
+ <label for="job-dates">Job Dates:</label>
+  <input type="text" id="job-dates" name="job-dates" required>
+ <label for="education-degree">Degree:</label>
+ <input type="text" id="education-degree" name="education-degree" required>
+ <label for="education-institution">Institution:</label>
+ <input type="text" id="education-institution" name="education-institution" required>
+ <button type="submit">Generate Resume</button>
+</form>
+ </section>
+ <section class="resume-output">
+<h2>Generated Resume</h2>
+<div id="resume">
+   
+
+
+</div>
+ </section>
+ </main>
+<div class="copyright"><p>Developed by ABDUL WASAY</p></div>
+ <script src="app.js"></script>
+</body>
+</html>
