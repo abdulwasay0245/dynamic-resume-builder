@@ -1,13 +1,15 @@
 'use client'
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function MyForm() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log({ email, name });
+    setName('')
+    setEmail('')
   };
 
   return (
