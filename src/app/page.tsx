@@ -6,6 +6,7 @@ export default function MyForm() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [profession, setProfession] = useState('');
+  const [skills, setSkills] = useState([]);
 
   const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -42,9 +43,17 @@ export default function MyForm() {
         placeholder="Enter your Phone Number"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
-        className='border-2 border-black' />
+          className='border-2 border-black' />
+            <input
+        type="text"
+        placeholder="Enter your Phone Number"
+        value={skills}
+        onChange={(e) => setSkills(e.target.value)}
+          className='border-2 border-black' />
+        {console.log(setSkills)}
       <button type="submit" className='bg-amber-950 text-white px-5 py-2 rounded-2xl'>Submit</button>
     </form>
         </div>
   );
+  
 }
