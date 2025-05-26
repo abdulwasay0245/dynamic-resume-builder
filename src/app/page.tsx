@@ -1,6 +1,7 @@
 'use client'
 import React, {  useState } from 'react';
 import Resume from './component/Resume';
+import Link from 'next/link';
 
 export default function MyForm() {
   const [email, setEmail] = useState('');
@@ -75,7 +76,9 @@ export default function MyForm() {
           </div>
         ))}
         
-      <button type="submit" className='bg-amber-950 text-white px-5 py-2 rounded-2xl'>Submit</button>
+        <Link target='_blank' href={`/[resume]`}>
+        <button type="submit" className='bg-amber-950 text-white px-5 py-2 rounded-2xl'>Submit</button>
+        </Link>
       </form>
       { 
        
