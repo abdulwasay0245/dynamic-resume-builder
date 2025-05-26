@@ -1,12 +1,12 @@
-import React from 'react';
 
-const Resume = () => {
+
+const Resume = ({name}: {name : string}) => {
   return (
     <main className="bg-gray-100 text-gray-800 p-8 min-h-screen">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-8">
         {/* Header */}
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold text-gray-900">John Doe</h1>
+          <h1 className="text-4xl font-bold text-gray-900">{ name}</h1>
           <p className="text-lg text-gray-600">Full Stack Web Developer</p>
           <p className="text-sm text-gray-500">
             johndoe@email.com | +1 234 567 890 | johndoe.dev

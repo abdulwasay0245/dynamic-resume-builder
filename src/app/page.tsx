@@ -1,5 +1,6 @@
 'use client'
-import React, { use, useState } from 'react';
+import React, {  useState } from 'react';
+import Resume from './component/Resume';
 
 export default function MyForm() {
   const [email, setEmail] = useState('');
@@ -23,7 +24,7 @@ export default function MyForm() {
   };
 
   return (
-    <div className='w-full h-screen flex items-center justify-center'>
+    <div className='w-full h-screen flex flex-col items-center justify-center'>
 
     <form onSubmit={handleSubmit} className='flex flex-col gap-10 text-black bg-amber-400 p-20 rounded-2xl'>
       <input
@@ -64,8 +65,14 @@ export default function MyForm() {
         ))}
         
       <button type="submit" className='bg-amber-950 text-white px-5 py-2 rounded-2xl'>Submit</button>
-    </form>
-        </div>
+      </form>
+     { 
+      name &&
+        <Resume name = {name} />
+     }
+      
+    </div>
+    
   );
   
 }
