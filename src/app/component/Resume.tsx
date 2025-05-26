@@ -13,7 +13,7 @@ const Resume = ({name , email, number, roll}: DetailProps) => {
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold text-gray-900">{name}</h1>
-          <p className="text-lg text-gray-600">{roll}</p>
+          <p  className="text-lg text-gray-600">{roll}</p>
           <p className="text-sm text-gray-500">
             {email} | {number} | johndoe.dev
           </p>
