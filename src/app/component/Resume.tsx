@@ -2,11 +2,12 @@ interface DetailProps{
   name: string,
   email: string,
   number: string,
-  roll?: string,
+  roll: string,
+  profession: string,
 
 }
 
-const Resume = ({name , email, number, roll}: DetailProps) => {
+const Resume = ({name , email, number, roll, profession}: DetailProps) => {
   return (
     <main className="bg-gray-100 text-gray-800 p-8 min-h-screen">
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-8">

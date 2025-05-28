@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Resume from '../component/Resume'; // adjust the path if needed
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ResumePage() {
   const params = useParams();
@@ -33,10 +34,13 @@ export default function ResumePage() {
       <Resume
         name={resumeData.name}
         email={resumeData.email}
+        roll={resumeData.roll}
         number={resumeData.phone}
         profession={resumeData.profession}
         skills={resumeData.skills}
+
       />
+   
     </div>
   );
 }
