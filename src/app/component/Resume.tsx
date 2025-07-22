@@ -1,11 +1,3 @@
-interface DetailProps{
-  name: string,
-  email: string,
-  number: string,
-  roll: string,
-  profession: string,
-
-}
 
 const Resume = ({name , email, number, roll, profession}: DetailProps) => {
   return (
