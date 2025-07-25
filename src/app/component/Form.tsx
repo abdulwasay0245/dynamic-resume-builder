@@ -1,4 +1,6 @@
-import { METHODS } from 'http';
+'use client'
+import axios, { AxiosResponse } from 'axios';
+
 import React, { useState } from 'react';
 
 const Form = () => {
@@ -36,7 +38,9 @@ const Form = () => {
       singleSkills,
     }
     try {
-      const response = await fetch("",
+      // const stringedData = JSON.stringify(formData)
+      // const response = axios.post("http://127.0.0.1:8000/triage",stringedData)
+      const response = await fetch("http://127.0.0.1:8000/triage",
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -46,12 +50,18 @@ const Form = () => {
 
       )
       const result = await response.json();
-      console.log(result);
+      const mergeData = {
+        ...formData,
+        ...result
+      }
+      console.log(mergeData);
 
-      sessionStorage.setItem('resumeData', JSON.stringify(formData))
+      
+      sessionStorage.setItem('resumeData', JSON.stringify(mergeData))
       window.open(`/${encodeURIComponent(name)}`, '_blank');
     }
-    catch {
+    catch(error) {
+      console.error("error",error);
       
     }
   }

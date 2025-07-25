@@ -7,24 +7,41 @@ import Link from 'next/link';
 export default function ResumePage() {
   const params = useParams();
   const nameParam = params.name;
+  console.log(params)
+  
 
   const [resumeData, setResumeData] = useState<any>(null);
 
-  useEffect(() => {
-    // Retrieve form data from sessionStorage
-    const data = sessionStorage.getItem('resumeData');
-    if (data) {
-      const parsedData = JSON.parse(data);
+ useEffect(() => {
+  console.log("useEffect triggered");
 
-      // Optional: verify that the name in URL matches the stored name
+  // Retrieve form data from sessionStorage
+  const data = sessionStorage.getItem('resumeData');
+
+  if (data) {
+    try {
+      const parsedData = JSON.parse(data);
+      console.log("From sessionStorage:", parsedData);
+
+      // Optional: Match nameParam from URL (if needed)
       if (parsedData.name === nameParam) {
         setResumeData(parsedData);
       } else {
-        // Handle mismatch or fallback
-        setResumeData(parsedData); // or null / error
+        console.warn("Name mismatch in URL and session data");
+        console.log(`nameparam ${nameParam}`);
+        console.log(`parseddata ${parsedData.name}`);
+
+        // Optionally handle mismatch: show error, redirect, etc.
+        setResumeData(null);
       }
+    } catch (error) {
+      console.error("Failed to parse resumeData from sessionStorage", error);
     }
-  }, [nameParam]);
+  } else {
+    console.warn("No resumeData found in sessionStorage");
+  }
+}, [nameParam]); // ✅ Re-run only if nameParam changes
+
 
  
 
@@ -35,7 +52,7 @@ export default function ResumePage() {
       {/* Contact */}
       <div>
         <h2 className="text-lg font-bold text-[#0f4c81]">CONTACT</h2>
-        <p><strong>Phone</strong><br />(941) 082-3655<br />Sarasota, FL 34243</p>
+          <p><strong>Phone</strong><br /><br />Sarasota, FL 34243</p>
         <p className="mt-3"><strong>Email</strong><br />andrea.martinez@email.com</p>
         <p className="mt-3"><strong>LinkedIn</strong><br />linkedin.com/in/andrea-martinez</p>
       </div>
@@ -78,7 +95,12 @@ export default function ResumePage() {
       {/* Summary */}
       <div>
         <p >
-          Recent Visual Communication Design graduate with over 1 year of internship and volunteer experience in graphic design. Proficient in using Adobe Creative Suite to create captivating visual content. Eager to leverage new artistic talents and hands-on experience to contribute innovative design solutions as a graphic designer at Socialfly.
+          {resumeData ? (
+  <h1 contentEditable>{resumeData.summary}</h1>
+) : (
+  <h1>Loading...</h1>
+)}
+
         </p>
       </div>
 
