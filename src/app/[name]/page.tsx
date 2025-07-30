@@ -13,27 +13,27 @@ export default function ResumePage() {
   const [resumeData, setResumeData] = useState<any>(null);
 
  useEffect(() => {
-  console.log("useEffect triggered");
+  
 
-  // Retrieve form data from sessionStorage
+
   const data = sessionStorage.getItem('resumeData');
 
   if (data) {
     try {
       const parsedData = JSON.parse(data);
-      console.log("From sessionStorage:", parsedData);
+      // console.log("From sessionStorage:", parsedData);
 
       // Optional: Match nameParam from URL (if needed)
-      if (parsedData.name === nameParam) {
-        setResumeData(parsedData);
-      } else {
-        console.warn("Name mismatch in URL and session data");
-        console.log(`nameparam ${nameParam}`);
-        console.log(`parseddata ${parsedData.name}`);
+      setResumeData(parsedData);
+      // if (parsedData.name === nameParam) {
+      // } else {
+      //   console.warn("Name mismatch in URL and session data");
+      //   console.log(`nameparam ${nameParam}`);
+      //   console.log(`parseddata ${parsedData.name}`);
 
-        // Optionally handle mismatch: show error, redirect, etc.
-        setResumeData(null);
-      }
+      //   // Optionally handle mismatch: show error, redirect, etc.
+      //   setResumeData(null);
+      // }
     } catch (error) {
       console.error("Failed to parse resumeData from sessionStorage", error);
     }
@@ -51,9 +51,10 @@ export default function ResumePage() {
     <div className="w-full md:w-1/3 bg-[#eaf3f8] text-[#3a3f44] p-6 space-y-6">
       {/* Contact */}
       <div>
-        <h2 className="text-lg font-bold text-[#0f4c81]">CONTACT</h2>
+          <h2 className="text-lg font-bold text-[#0f4c81]">{nameParam }</h2>
+          <h2 className="text-lg font-bold text-[#0f4c81]">CONTACT{ nameParam}</h2>
           <p><strong>Phone</strong><br /><br />Sarasota, FL 34243</p>
-        <p className="mt-3"><strong>Email</strong><br />andrea.martinez@email.com</p>
+          <p className="mt-3"><strong>Email</strong><br />{resumeData.email }</p>
         <p className="mt-3"><strong>LinkedIn</strong><br />linkedin.com/in/andrea-martinez</p>
       </div>
 

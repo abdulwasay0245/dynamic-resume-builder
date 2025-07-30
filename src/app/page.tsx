@@ -1,10 +1,12 @@
 import React from 'react';
 import Header from './component/Header';
 import Link from 'next/link';
+import Form from './component/Form';
+
 
 const ResumeBuilder = () => {
   return (
-    <div className="relative flex min-h-screen flex-col bg-white overflow-x-hidden font-['Public_Sans','Noto_Sans',sans-serif]">
+    <div className={`relative flex min-h-screen flex-col bg-white overflow-x-hidden font-['Public_Sans','Noto_Sans',sans-serif]`}>
       {/* Header */}
       <Header />
 

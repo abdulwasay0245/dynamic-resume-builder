@@ -1,7 +1,10 @@
 'use client'
 import axios, { AxiosResponse } from 'axios';
 
+
 import React, { useState } from 'react';
+import Loader from './Loader';
+import { useRouter } from 'next/navigation';
 
 const Form = () => {
   const [name, setName] = useState("");
@@ -17,58 +20,75 @@ const Form = () => {
   const [company, setCompany] = useState("");
   const [time, setTime] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-
-  const [skills, setSkills] = useState("");
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const singleSkills = skills.split(',').map(skill => skill.trim())
-    console.log(singleSkills)
-    const formData = {
-      name,
-      email,
-      number,
-      address,
-      degName,
-      university,
-      educationYear,
-      position,
-      company,
-      time,
-      jobDescription,
-      singleSkills,
-    }
-    try {
-      // const stringedData = JSON.stringify(formData)
-      // const response = axios.post("http://127.0.0.1:8000/triage",stringedData)
-      const response = await fetch("http://127.0.0.1:8000/triage",
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        },
-
-
-      )
-      const result = await response.json();
-      const mergeData = {
-        ...formData,
-        ...result
-      }
-      console.log(mergeData);
-
-      
-      sessionStorage.setItem('resumeData', JSON.stringify(mergeData))
-      window.open(`/${encodeURIComponent(name)}`, '_blank');
-    }
-    catch(error) {
-      console.error("error",error);
-      
-    }
-  }
+  const [isLoading, setIsLoading] = useState(false);
   
+  const [skills, setSkills] = useState("");
+  const router = useRouter()
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // const newTab = window.open('','_blank')
+    e.preventDefault();
+    setIsLoading(true)
+    
+      const singleSkills = skills.split(',').map(skill => skill.trim())
+      console.log(singleSkills)
+      const formData = {
+        name,
+        email,
+        number,
+        address,
+        degName,
+        university,
+        educationYear,
+        position,
+        company,
+        time,
+        jobDescription,
+        singleSkills,
+      }
+      try {
+        // const stringedData = JSON.stringify(formData)
+        // const response = axios.post("http://127.0.0.1:8000/triage",stringedData)
+        const response = await fetch("http://127.0.0.1:8000/triage",
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          },
 
-  return (
-    <form onSubmit={handleSubmit} className="layout-content-container flex flex-col w-80">
+
+        )
+        const result = await response.json();
+        if (result) {
+          setIsLoading(false)
+        }
+        const mergeData = {
+          ...formData,
+          ...result
+        }
+        console.log(mergeData);
+
+      
+        sessionStorage.setItem('resumeData', JSON.stringify(mergeData))
+        // window.open(`/${encodeURIComponent(name)}`, '_blank');
+        router.push(`/${encodeURIComponent(name)}`);
+    //     if (newTab) {
+    //       // newTab.location.href = `/${encodeURIComponent(name)}`;
+          
+    // }
+      }
+      catch (error) {
+        console.error("error", error);
+        
+      }
+      
+    }
+    console.log("loader",isLoading);
+  
+  if (isLoading) return <Loader />
+  else {
+    
+    return (
+      <form onSubmit={handleSubmit} className={`${isLoading ? "hidden": " "}layout-content-container flex flex-col w-80`}>
       {/* Personal Info */}
       <h2 className="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Personal Info</h2>
       <input type='text' value={name} onChange={(e) => setName(e.target.value)} placeholder="Full Name" className="mb-2 placeholder-gray-400 border p-2 rounded" />
@@ -95,6 +115,7 @@ const Form = () => {
       <button className="bg-black"type='submit'>submit</button>
     </form>
   );
+}
 };
 
 export default Form;
