@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Resume from '../component/Resume'; // adjust the path if needed
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { ParamValue } from 'next/dist/server/request/params';
 
 export default function ResumePage() {
   const params = useParams();
@@ -40,21 +41,24 @@ export default function ResumePage() {
   } else {
     console.warn("No resumeData found in sessionStorage");
   }
-}, [nameParam]); // ✅ Re-run only if nameParam changes
+ }, [nameParam]); // ✅ Re-run only if nameParam changes
+  
 
 
  
-
+if (!resumeData) {
+  return <p>Loading resume data...</p>;
+}
   return (
     <div className="flex flex-col md:flex-row max-w-5xl mx-auto shadow-md bg-white font-sans text-sm">
     {/* Left Column */}
     <div className="w-full md:w-1/3 bg-[#eaf3f8] text-[#3a3f44] p-6 space-y-6">
       {/* Contact */}
       <div>
-          <h2 className="text-lg font-bold text-[#0f4c81]">{nameParam }</h2>
+          <h2 className="text-lg font-bold text-[#0f4c81]">{decodeURIComponent(nameParam) }</h2>
           <h2 className="text-lg font-bold text-[#0f4c81]">CONTACT{ nameParam}</h2>
           <p><strong>Phone</strong><br /><br />Sarasota, FL 34243</p>
-          <p className="mt-3"><strong>Email</strong><br />{resumeData.email }</p>
+          <p className="mt-3"><strong>Email</strong><br />{resumeData.email ||"loading.." }</p>
         <p className="mt-3"><strong>LinkedIn</strong><br />linkedin.com/in/andrea-martinez</p>
       </div>
 
@@ -75,13 +79,15 @@ export default function ResumePage() {
       <div>
         <h2 className="text-lg font-bold text-[#0f4c81]">ADDITIONAL SKILLS</h2>
         <ul className="list-disc list-inside space-y-1">
-          <li>Adobe Photoshop</li>
-          <li>Adobe Illustrator</li>
+            {resumeData.singleSkills.map((skill) => (
+              <li key={skill}>{skill }</li>
+          ))}
+          {/* <li>Adobe Illustrator</li>
           <li>Adobe InDesign</li>
           <li>Digital theory</li>
           <li>Video & print production</li>
           <li>Collaboration</li>
-          <li>Time management</li>
+          <li>Time management</li> */}
         </ul>
       </div>
     </div>
@@ -129,7 +135,8 @@ export default function ResumePage() {
           </ul>
         </div>
       </div>
-    </div>
+      </div>
+      <input type="color"  />
   </div>
   );
 }

@@ -6,6 +6,11 @@ import React, { useState } from 'react';
 import Loader from './Loader';
 import { useRouter } from 'next/navigation';
 
+
+interface Datatype{
+  name?: string,
+  email?:string
+}
 const Form = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -61,7 +66,7 @@ const Form = () => {
         if (result) {
           setIsLoading(false)
         }
-        const mergeData = {
+        const mergeData:Datatype = {
           ...formData,
           ...result
         }
