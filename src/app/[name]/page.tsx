@@ -11,12 +11,12 @@ import { useReactToPrint } from 'react-to-print';
 export default function ResumePage() {
   const resumeRef = useRef(null)
 
-  const handlePrint = useReactToPrint({
+  // const handlePrint = useReactToPrint({
     
-    content: () => resumeRef.current,
-    documentTitle: 'Resume-Abdul-Wasay',
-    onAfterPrint: () => alert('PDF Downloaded or Sent to Printer!'),
-  });
+  //   content: () => resumeRef.current,
+  //   documentTitle: 'Resume-Abdul-Wasay',
+  //   onAfterPrint: () => alert('PDF Downloaded or Sent to Printer!'),
+  // });
   // const downloadPDF = async () => {
   //   const input = resumeRef.current;
   //   console.log(resumeRef.current);
@@ -136,7 +136,7 @@ if (!resumeData) {
     {/* Right Column */}
     <div className="w-full md:w-2/3 p-6 space-y-6 text-gray-600">
       <div>
-          <h1 className="text-2xl font-bold text-[#0f4c81] uppercase">{decodeURIComponent(nameParam) }</h1>
+          <h1 className="text-2xl font-bold text-[#0f4c81] uppercase">{nameParam }</h1>
         <p className="text-sm text-gray-600">Example by Resume Genius</p>
       </div>
 
@@ -178,7 +178,7 @@ if (!resumeData) {
       </div>
       </div>
       <input type="color" value={color} onChange={((e) => setColor(e.target.value))} />
-      <button className='bg-red-700 text-amber-400' onClick={handlePrint}>Download PDF</button>
+      <button className='bg-red-700 text-amber-400'>Download PDF</button>
   </div>
   );
 }
