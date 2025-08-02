@@ -1,17 +1,54 @@
 'use client';
-import React, { useEffect, useState } from 'react';
-import Resume from '../component/Resume'; // adjust the path if needed
+/* eslint-disable */
+import React, { useEffect, useState,useRef } from 'react';
+
 import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import { ParamValue } from 'next/dist/server/request/params';
+
+
+import { useReactToPrint } from 'react-to-print';
+
 
 export default function ResumePage() {
+  const resumeRef = useRef(null)
+
+  const handlePrint = useReactToPrint({
+    
+    content: () => resumeRef.current,
+    documentTitle: 'Resume-Abdul-Wasay',
+    onAfterPrint: () => alert('PDF Downloaded or Sent to Printer!'),
+  });
+  // const downloadPDF = async () => {
+  //   const input = resumeRef.current;
+  //   console.log(resumeRef.current);
+    
+  //   if (!input) return;
+  //   console.log("downloding");
+    
+  //   const canvas = await html2canvas(input, { scale: 2 });
+  //   const imgData = canvas.toDataURL('image/png');
+
+  //   const pdf = new jsPDF('p', 'mm', 'a4');
+  //   console.log(pdf);
+    
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   console.log(pdfWidth);
+    
+  //   const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  //   console.log(pdfHeight);
+    
+
+  //   pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+  //   pdf.save('resume.pdf');
+  // };
+
   const params = useParams();
   const nameParam = params.name;
   console.log(params)
   
 
   const [resumeData, setResumeData] = useState<any>(null);
+  const [color, setColor] = useState("white")
+  
 
  useEffect(() => {
   
@@ -24,15 +61,17 @@ export default function ResumePage() {
       const parsedData = JSON.parse(data);
       // console.log("From sessionStorage:", parsedData);
 
-      // Optional: Match nameParam from URL (if needed)
+      
+      //  console.warn(resumeData.singleSkills);
       setResumeData(parsedData);
+      // const skill = resumeData.singleSkills
+      
       // if (parsedData.name === nameParam) {
       // } else {
       //   console.warn("Name mismatch in URL and session data");
       //   console.log(`nameparam ${nameParam}`);
       //   console.log(`parseddata ${parsedData.name}`);
 
-      //   // Optionally handle mismatch: show error, redirect, etc.
       //   setResumeData(null);
       // }
     } catch (error) {
@@ -50,14 +89,16 @@ if (!resumeData) {
   return <p>Loading resume data...</p>;
 }
   return (
-    <div className="flex flex-col md:flex-row max-w-5xl mx-auto shadow-md bg-white font-sans text-sm">
+    <div ref = {resumeRef} style={{backgroundColor: color}} className={`flex flex-col md:flex-row max-w-5xl mx-auto shadow-md  font-sans text-sm`}>
     {/* Left Column */}
     <div className="w-full md:w-1/3 bg-[#eaf3f8] text-[#3a3f44] p-6 space-y-6">
       {/* Contact */}
       <div>
-          <h2 className="text-lg font-bold text-[#0f4c81]">{decodeURIComponent(nameParam) }</h2>
-          <h2 className="text-lg font-bold text-[#0f4c81]">CONTACT{ nameParam}</h2>
-          <p><strong>Phone</strong><br /><br />Sarasota, FL 34243</p>
+          <h2 className="text-lg font-bold text-[#0f4c81]"></h2>
+          <h2 className="text-lg font-bold text-[#0f4c81]">CONTACT</h2>
+          <p><strong>Phone</strong>
+            <p>{resumeData.number || "loading..."}</p>
+          </p>
           <p className="mt-3"><strong>Email</strong><br />{resumeData.email ||"loading.." }</p>
         <p className="mt-3"><strong>LinkedIn</strong><br />linkedin.com/in/andrea-martinez</p>
       </div>
@@ -79,8 +120,8 @@ if (!resumeData) {
       <div>
         <h2 className="text-lg font-bold text-[#0f4c81]">ADDITIONAL SKILLS</h2>
         <ul className="list-disc list-inside space-y-1">
-            {resumeData.singleSkills.map((skill) => (
-              <li key={skill}>{skill }</li>
+            {resumeData.singleSkills.map((skill : string) => (
+              <li key={skill}>{skill.toUpperCase() }</li>
           ))}
           {/* <li>Adobe Illustrator</li>
           <li>Adobe InDesign</li>
@@ -95,7 +136,7 @@ if (!resumeData) {
     {/* Right Column */}
     <div className="w-full md:w-2/3 p-6 space-y-6 text-gray-600">
       <div>
-        <h1 className="text-2xl font-bold text-[#0f4c81] uppercase">Resume for Beginners</h1>
+          <h1 className="text-2xl font-bold text-[#0f4c81] uppercase">{decodeURIComponent(nameParam) }</h1>
         <p className="text-sm text-gray-600">Example by Resume Genius</p>
       </div>
 
@@ -103,7 +144,7 @@ if (!resumeData) {
       <div>
         <p >
           {resumeData ? (
-  <h1 contentEditable>{resumeData.summary}</h1>
+  <h1 >{resumeData.summary}</h1>
 ) : (
   <h1>Loading...</h1>
 )}
@@ -136,7 +177,8 @@ if (!resumeData) {
         </div>
       </div>
       </div>
-      <input type="color"  />
+      <input type="color" value={color} onChange={((e) => setColor(e.target.value))} />
+      <button className='bg-red-700 text-amber-400' onClick={handlePrint}>Download PDF</button>
   </div>
   );
 }

@@ -1,15 +1,20 @@
 'use client'
-import axios, { AxiosResponse } from 'axios';
-
-
 import React, { useState } from 'react';
 import Loader from './Loader';
 import { useRouter } from 'next/navigation';
 
 
 interface Datatype{
-  name?: string,
-  email?:string
+  name: string,
+  email: string
+  number: string,
+  address?: string,
+  skills?: [string],
+  degname?: string,
+  university?: string,
+  educationYear?:string
+  
+  
 }
 const Form = () => {
   const [name, setName] = useState("");

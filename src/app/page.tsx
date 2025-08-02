@@ -1,7 +1,6 @@
 import React from 'react';
 import Header from './component/Header';
 import Link from 'next/link';
-import Form from './component/Form';
 
 
 const ResumeBuilder = () => {
