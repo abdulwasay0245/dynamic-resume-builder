@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import Header from '../component/Header';
 import Form from '../component/Form';
 
@@ -8,7 +8,7 @@ const ResumeBuilder = () => {
   
 
  
-  };
+  
 
   return (
     <div
@@ -76,12 +76,12 @@ const ResumeBuilder = () => {
               </div>
             </div>
 
-          </div> {/* End of Template Section */}
+          </div> 
 
-        </div> {/* End of Form and Template Wrapper */}
+        </div> 
 
-      </div> {/* End of layout-container */}
-    </div> // End of ResumeBuilder Wrapper
+      </div> 
+    </div>
   );
 };
 
