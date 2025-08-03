@@ -6,13 +6,17 @@ import { useParams } from 'next/navigation';
 
 
 import UserContext from '../context/UserContext';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ResumeDocument from '../component/DownloadableResume';
 
 
 
+import FormData from '@/types/FormInput';
 
 export default function ResumePage() {
-  const { Forms } = useContext(UserContext)
-  
+
+  const { Forms } = useContext(UserContext) as { Forms: FormData | null };
+
   const resumeRef = useRef(null)
 
 
@@ -22,7 +26,7 @@ export default function ResumePage() {
   console.log(params)
   
 
-  const [resumeData, setResumeData] = useState<any>(null);
+  const [resumeData, setResumeData] = useState<FormData | null>(null);
   const [color, setColor] = useState("white")
   
   
@@ -142,8 +146,14 @@ if (!resumeData) {
         </div>
       </div>
       </div>
-      <input type="color" value={color} onChange={((e) => setColor(e.target.value))} />
-      <button className='bg-red-700 text-amber-400'>Download PDF</button>
+      <PDFDownloadLink
+      document={<ResumeDocument dataProp={resumeData} />}
+      fileName="example.pdf"
+    >
+      Download PDF
+    </PDFDownloadLink>
+      {/* <input type="color" value={color} onChange={((e) => setColor(e.target.value))} /> */}
+      {/* <button className='bg-red-700 text-amber-400'>Download PDF</button> */}
       </div>
   //  
   );

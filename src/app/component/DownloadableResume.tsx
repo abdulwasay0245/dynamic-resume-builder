@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+
 import {
   Page,
   Text,
@@ -7,6 +7,8 @@ import {
   Document,
   StyleSheet,
 } from '@react-pdf/renderer';
+import FormData from '@/types/FormInput';
+
 
 // Manual styles (no Tailwind)
 const styles = StyleSheet.create({
@@ -49,15 +51,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const ResumeDocument = () => (
+const ResumeDocument = ({ dataProp }:{dataProp: FormData}) => (
+    
   <Document>
     <Page size="A4" style={styles.page}>
       {/* Left Column */}
       <View style={styles.leftColumn}>
         <View>
           <Text style={styles.sectionTitle}>CONTACT</Text>
-          <Text>Phone: (123) 456-7890</Text>
-          <Text>Email: andrea@example.com</Text>
+                    <Text>Phone: { dataProp.number}</Text>
+                    <Text>Email: {dataProp.email }</Text>
           <Text>LinkedIn: linkedin.com/in/andrea-martinez</Text>
         </View>
 
@@ -71,14 +74,16 @@ const ResumeDocument = () => (
           <Text>June 2023</Text>
         </View>
 
-        <View>
-          <Text style={styles.sectionTitle}>ADDITIONAL SKILLS</Text>
-          <Text style={styles.listItem}>• ADOBE ILLUSTRATOR</Text>
+        <View >
+         {dataProp.singleSkills.map((skill) => (
+                        <Text style={styles.listItem} key={skill}>•{skill.toUpperCase()}</Text>
+          ))}
+          {/* <Text style={styles.listItem}>• ADOBE ILLUSTRATOR</Text>
           <Text style={styles.listItem}>• ADOBE INDESIGN</Text>
           <Text style={styles.listItem}>• DIGITAL THEORY</Text>
           <Text style={styles.listItem}>• VIDEO & PRINT PRODUCTION</Text>
           <Text style={styles.listItem}>• COLLABORATION</Text>
-          <Text style={styles.listItem}>• TIME MANAGEMENT</Text>
+          <Text style={styles.listItem}>• TIME MANAGEMENT</Text> */}
         </View>
       </View>
 

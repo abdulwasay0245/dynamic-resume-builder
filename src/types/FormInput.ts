@@ -1,19 +1,14 @@
-interface Datatype{
-  name: string,
-  email: string
-  number: string,
-  address?: string,
-  skills?: [string],
-  degname?: string,
-  university?: string,
-  educationYear?:string
-  
-  
+export default interface FormData {
+name: string;
+email: string;
+number: string;
+address: string;
+degName: string;
+university: string;
+educationYear: string;
+position: string;
+company: string;
+time: string;
+jobDescription: string;
+singleSkills: string[];
 }
-
-interface FormType{
-    user: Datatype
-    setForm: Datatype
-    
-}
-export default FormType

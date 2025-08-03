@@ -80,8 +80,12 @@ const Form = () => {
       }
       catch (error) {
         console.error("error", error);
+        setIsLoading(false)
         
-      }
+    }
+      finally {
+        
+    }
       
     }
   console.log("loader", isLoading);
