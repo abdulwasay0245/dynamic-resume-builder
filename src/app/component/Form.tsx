@@ -1,21 +1,9 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState,useContext, useEffect } from 'react';
 import Loader from './Loader';
 import { useRouter } from 'next/navigation';
+import UserContext from '../context/UserContext';
 
-
-interface Datatype{
-  name: string,
-  email: string
-  number: string,
-  address?: string,
-  skills?: [string],
-  degname?: string,
-  university?: string,
-  educationYear?:string
-  
-  
-}
 const Form = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -34,6 +22,7 @@ const Form = () => {
   
   const [skills, setSkills] = useState("");
   const router = useRouter()
+  const {Forms,setForms}= useContext(UserContext)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     // const newTab = window.open('','_blank')
     e.preventDefault();
@@ -58,7 +47,7 @@ const Form = () => {
       try {
         // const stringedData = JSON.stringify(formData)
         // const response = axios.post("http://127.0.0.1:8000/triage",stringedData)
-        const response = await fetch("http://127.0.0.1:8000/triage",
+        const response = await fetch("https://triage-agent-production.up.railway.app/triage",
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -71,10 +60,13 @@ const Form = () => {
         if (result) {
           setIsLoading(false)
         }
-        const mergeData:Datatype = {
+        const mergeData= {
           ...formData,
           ...result
         }
+        setForms(mergeData)
+        console.log("context api",Forms);
+        
         console.log(mergeData);
 
       
@@ -92,7 +84,15 @@ const Form = () => {
       }
       
     }
-    console.log("loader",isLoading);
+  console.log("loader", isLoading);
+  useEffect(() => {
+    
+   console.log("contextapi formdata",Forms);
+   
+  
+    
+  }, [Forms])
+  
   
   if (isLoading) return <Loader />
   else {

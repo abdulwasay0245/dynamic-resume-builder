@@ -1,45 +1,21 @@
 'use client';
 /* eslint-disable */
-import React, { useEffect, useState,useRef } from 'react';
+import React, { useEffect,useContext, useState,useRef } from 'react';
 
 import { useParams } from 'next/navigation';
 
 
-import { useReactToPrint } from 'react-to-print';
+import UserContext from '../context/UserContext';
+
+
 
 
 export default function ResumePage() {
+  const { Forms } = useContext(UserContext)
+  
   const resumeRef = useRef(null)
 
-  // const handlePrint = useReactToPrint({
-    
-  //   content: () => resumeRef.current,
-  //   documentTitle: 'Resume-Abdul-Wasay',
-  //   onAfterPrint: () => alert('PDF Downloaded or Sent to Printer!'),
-  // });
-  // const downloadPDF = async () => {
-  //   const input = resumeRef.current;
-  //   console.log(resumeRef.current);
-    
-  //   if (!input) return;
-  //   console.log("downloding");
-    
-  //   const canvas = await html2canvas(input, { scale: 2 });
-  //   const imgData = canvas.toDataURL('image/png');
 
-  //   const pdf = new jsPDF('p', 'mm', 'a4');
-  //   console.log(pdf);
-    
-  //   const pdfWidth = pdf.internal.pageSize.getWidth();
-  //   console.log(pdfWidth);
-    
-  //   const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-  //   console.log(pdfHeight);
-    
-
-  //   pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-  //   pdf.save('resume.pdf');
-  // };
 
   const params = useParams();
   const nameParam = params.name;
@@ -49,38 +25,27 @@ export default function ResumePage() {
   const [resumeData, setResumeData] = useState<any>(null);
   const [color, setColor] = useState("white")
   
-
- useEffect(() => {
   
-
-
-  const data = sessionStorage.getItem('resumeData');
-
-  if (data) {
-    try {
-      const parsedData = JSON.parse(data);
-      // console.log("From sessionStorage:", parsedData);
-
-      
-      //  console.warn(resumeData.singleSkills);
+  useEffect(() => {
+    
+    
+    
+    const data = sessionStorage.getItem('resumeData');
+    
+    console.log("contextapi dynamic route data", Forms);
+    if (data) {
+      try {
+        const parsedData = JSON.parse(data);
+    
       setResumeData(parsedData);
-      // const skill = resumeData.singleSkills
-      
-      // if (parsedData.name === nameParam) {
-      // } else {
-      //   console.warn("Name mismatch in URL and session data");
-      //   console.log(`nameparam ${nameParam}`);
-      //   console.log(`parseddata ${parsedData.name}`);
-
-      //   setResumeData(null);
-      // }
+     
     } catch (error) {
       console.error("Failed to parse resumeData from sessionStorage", error);
     }
   } else {
     console.warn("No resumeData found in sessionStorage");
   }
- }, [nameParam]); // ✅ Re-run only if nameParam changes
+ }, [nameParam, Forms]); // ✅ Re-run only if nameParam changes
   
 
 
@@ -170,15 +135,16 @@ if (!resumeData) {
         <div className="mt-5">
           <p><strong>Graphic Design Intern</strong><br />Sann, Sarasota, FL<br />May 2022 – November 2022</p>
           <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-            <li>Assisted the marketing team in creating social media assets and ad banners.</li>
-            <li>Helped redesign company website for a more modern UI.</li>
-            <li>Worked on print materials for product launches and presentations.</li>
+            <li contentEditable>Assisted the marketing team in creating social media assets and ad banners.</li>
+            <li contentEditable>Helped redesign company website for a more modern UI.</li>
+            <li contentEditable>Worked on print materials for product launches and presentations.</li>
           </ul>
         </div>
       </div>
       </div>
       <input type="color" value={color} onChange={((e) => setColor(e.target.value))} />
       <button className='bg-red-700 text-amber-400'>Download PDF</button>
-  </div>
+      </div>
+  //  
   );
 }
