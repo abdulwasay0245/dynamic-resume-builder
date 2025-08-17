@@ -54,7 +54,7 @@ export default function ResumePage() {
     console.log("This is job summary  m", resumeData?.job_summary);
       console.log("This is job summary  m",resumeData?.education_summary);
 
- }, [nameParam, Forms]); // ✅ Re-run only if nameParam changes
+ }, [nameParam, Forms])
   
 
 
@@ -160,8 +160,7 @@ if (!resumeData) {
     >
       Download PDF
     </PDFDownloadLink>
-      {/* <input type="color" value={color} onChange={((e) => setColor(e.target.value))} /> */}
-      {/* <button className='bg-red-700 text-amber-400'>Download PDF</button> */}
+      
       </div>
   //  
   );

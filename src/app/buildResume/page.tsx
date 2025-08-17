@@ -2,8 +2,7 @@
 import React from 'react';
 import Header from '../component/Header';
 import Form from '../component/Form';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import ResumePDF from '../login/page';
+
 
 
 
@@ -85,9 +84,7 @@ const ResumeBuilder = () => {
 
           </div> 
 
-    <PDFDownloadLink document={<ResumePDF />} fileName="resume.pdf">
-      {({ loading }) => (loading ? "Loading..." : "Download Resume")}
-    </PDFDownloadLink>
+  
         </div> 
       </div> 
     </div>
