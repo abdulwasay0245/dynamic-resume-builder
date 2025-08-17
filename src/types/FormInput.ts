@@ -7,7 +7,8 @@ degName: string;
 university: string;
 educationYear: string;
     position: string;
-    summary: string;
+    education_summary: string;
+    job_summary:string[]
 company: string;
 time: string;
 jobDescription: string;

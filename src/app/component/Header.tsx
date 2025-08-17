@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 const Header = () => {
@@ -31,10 +32,12 @@ const Header = () => {
         <a className="text-[#111418] text-sm font-medium leading-normal" href="#">Templates</a>
         <a className="text-[#111418] text-sm font-medium leading-normal" href="#">Examples</a>
         <a className="text-[#111418] text-sm font-medium leading-normal" href="#">Pricing</a>
-      </div>
+        </div>
+        <Link href={"/buildResume"}>
       <button className="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#3680f6] text-white text-sm font-bold leading-normal tracking-[0.015em]">
         <span className="truncate">New Resume</span>
       </button>
+        </Link>
       <div
         className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
         style={{

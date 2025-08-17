@@ -47,7 +47,7 @@ const Form = () => {
       try {
         // const stringedData = JSON.stringify(formData)
         // const response = axios.post("http://127.0.0.1:8000/triage",stringedData)
-        const response = await fetch("https://triage-agent-production.up.railway.app/triage",
+        const response = await fetch("http://127.0.0.1:8000/triage",
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -60,6 +60,8 @@ const Form = () => {
         if (result) {
           setIsLoading(false)
         }
+        console.log(result);
+        
         const mergeData= {
           ...formData,
           ...result

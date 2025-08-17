@@ -39,16 +39,21 @@ export default function ResumePage() {
     console.log("contextapi dynamic route data", Forms);
     if (data) {
       try {
+        
         const parsedData = JSON.parse(data);
+
     
       setResumeData(parsedData);
-     
+      
     } catch (error) {
       console.error("Failed to parse resumeData from sessionStorage", error);
     }
   } else {
     console.warn("No resumeData found in sessionStorage");
   }
+    console.log("This is job summary  m", resumeData?.job_summary);
+      console.log("This is job summary  m",resumeData?.education_summary);
+
  }, [nameParam, Forms]); // ✅ Re-run only if nameParam changes
   
 
@@ -113,7 +118,7 @@ if (!resumeData) {
       <div>
         <p >
           {resumeData ? (
-  <h1 >{resumeData.summary}</h1>
+  <h1 >{resumeData.education_summary}</h1>
 ) : (
   <h1>Loading...</h1>
 )}
@@ -123,15 +128,18 @@ if (!resumeData) {
 
       {/* Experience */}
       <div>
-        <h2 className="text-lg font-bold text-[#0f4c81]">RELEVANT EXPERIENCE</h2>
+        <h2 className="text-lg font-bold text-[#0f4c81]">Work EXPERIENCE</h2>
         {/* Job 1 */}
         <div className="mt-3">
-          <p><strong>Graphic Design Volunteer</strong><br />Cat Depot, Sarasota, FL<br />December 2022 – Present</p>
+            <p><strong>{resumeData.position}</strong><br />{resumeData.company}<br />{resumeData.time }</p>
           <ul className="list-disc list-inside ml-4 mt-1 space-y-1">
-            <li>Used Adobe Creative Suite, including Photoshop and Illustrator, to enhance branding materials.</li>
-            <li>Designed marketing assets that increased adoption inquiries by 30% and donations by 15%.</li>
-            <li>Created engaging visuals for the organizations monthly newsletter.</li>
-            <li>Worked with event teams on posters and banners for fundraising events.</li>
+      {Array.isArray(resumeData?.job_summary) ? (
+    resumeData.job_summary.map((summ: string, index: number) => (
+      <li key={index}>{summ}</li>
+    ))
+  ) : (
+    <li>No summary available</li>
+  )}
           </ul>
         </div>
 
@@ -145,7 +153,7 @@ if (!resumeData) {
           </ul>
         </div>
       </div>
-      </div>
+      </div> 
       <PDFDownloadLink
       document={<ResumeDocument dataProp={resumeData} />}
       fileName="example.pdf"
