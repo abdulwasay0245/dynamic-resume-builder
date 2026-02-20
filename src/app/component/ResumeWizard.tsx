@@ -10,6 +10,8 @@ import EducationDetails from './steps/EducationDetails';
 import ExperienceDetails from './steps/ExperienceDetails';
 import SkillsDetails from './steps/SkillsDetails';
 import Loader from './Loader';
+import { ResumeScore } from './ai/ResumeScore';
+import { JobMatcher } from './ai/JobMatcher';
 
 // Define the shape of our form data
 export interface FormDataState {
@@ -96,7 +98,6 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
             const mergeData = {
                 ...payload,
                 ...result,
-                education_summary: formData.education_summary 
             };
             
             setForms(mergeData);
@@ -120,7 +121,7 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
                     <span className="text-sm font-medium text-slate-500">Step {currentStep + 1} of {steps.length}</span>
                 </div>
                 {/* Progress Bar */}
-                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-6">
                     <motion.div 
                         className="h-full bg-indigo-600"
                         initial={{ width: 0 }}

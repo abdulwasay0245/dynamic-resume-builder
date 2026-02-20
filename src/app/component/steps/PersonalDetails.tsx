@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
+import { Loader2, Sparkles } from 'lucide-react';
 
 interface PersonalDetailsProps {
     data: {

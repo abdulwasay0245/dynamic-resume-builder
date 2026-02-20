@@ -54,16 +54,7 @@ const EducationDetails: React.FC<EducationDetailsProps> = ({ data, updateData })
                     required
                 />
             </div>
-               <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium text-slate-600">Summary about yourself</label>
-                            <textarea
-                                value={data.education_summary}
-                                onChange={(e) => updateData({ education_summary: e.target.value })}
-                                className="p-3 border border-slate-200 rounded-lg h-32 focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
-                                placeholder="Write a summary about yourself..."
-                                required
-                            />
-                        </div>
+
         </motion.div>
     );
 };
