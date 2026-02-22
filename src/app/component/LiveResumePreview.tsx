@@ -30,19 +30,29 @@ interface LiveResumePreviewProps {
 const LiveResumePreview: React.FC<LiveResumePreviewProps> = ({ data }) => {
     const { selectedTemplate } = useContext(UserContext);
 
-    switch (selectedTemplate) {
-        case 'professional':
-            return <ProfessionalTemplate data={data} />;
-        case 'creative':
-            return <CreativeTemplate data={data} />;
-        case 'minimal':
-            return <MinimalTemplate data={data} />;
-        case 'compact':
-            return <CompactTemplate data={data} />;
-        case 'modern':
-        default:
-            return <ModernTemplate data={data} />;
-    }
+    const renderTemplate = () => {
+        switch (selectedTemplate) {
+            case 'professional':
+                return <ProfessionalTemplate data={data} />;
+            case 'creative':
+                return <CreativeTemplate data={data} />;
+            case 'minimal':
+                return <MinimalTemplate data={data} />;
+            case 'compact':
+                return <CompactTemplate data={data} />;
+            case 'modern':
+            default:
+                return <ModernTemplate data={data} />;
+        }
+    };
+
+    return (
+        <div id="resume-to-print" className="w-full">
+            {renderTemplate()}
+        </div>
+    );
+
 };
+
 
 export default LiveResumePreview;

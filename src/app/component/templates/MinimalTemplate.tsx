@@ -4,7 +4,8 @@ import { FormDataState } from '../ResumeWizard';
 export const MinimalTemplate = ({ data }: { data: FormDataState }) => {
     const skillsArray = data.skills.split(',').map(s => s.trim()).filter(s => s);
     return (
-        <div className="w-full h-full bg-white shadow-lg p-10 flex flex-col text-sm font-mono leading-relaxed aspect-[1/1.414]">
+        <div className="w-full bg-white shadow-lg p-10 flex flex-col text-sm font-mono leading-relaxed min-h-[1100px]">
+
              <div className="mb-8">
                 <h1 className="text-2xl font-bold text-black mb-1 uppercase bg-black text-white px-2 inline-block">{data.name}</h1>
                 <p className="text-slate-600">{data.position}</p>

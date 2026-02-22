@@ -5,37 +5,32 @@ import { FormDataState } from '../ResumeWizard';
 export const JobMatcher = ({ data }: { data: FormDataState }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [jobDesc, setJobDesc] = useState("");
-    const [matches, setMatches] = useState<{ found: string[], missing: string[] } | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [matches, setMatches] = useState<{ found: string[], missing: string[], score: number, summary: string } | null>(null);
 
-    const analyzeJob = () => {
+    const analyzeJob = async () => {
         if (!jobDesc) return;
-        
-        // Simple mock analysis logic
-        // Extract plausible keywords (capitalized words for simplicity in this mock)
-        // In reality, this would use an NLP API
-        const keywords = jobDesc.match(/\b[A-Z][a-z]+\b/g) || [];
-        const uniqueKeywords = Array.from(new Set(keywords));
-        
-        const resumeText = JSON.stringify(data).toLowerCase();
-        
-        const found: string[] = [];
-        const missing: string[] = [];
-
-        uniqueKeywords.forEach(kw => {
-            if (resumeText.includes(kw.toLowerCase())) {
-                found.push(kw);
-            } else {
-                missing.push(kw);
-            }
-        });
-
-        // Add some dummy "AI" keywords if none found to show UI
-        if (uniqueKeywords.length === 0) {
-            missing.push("Teamwork", "Agile", "Leadership");
+        setIsLoading(true);
+        try {
+            const response = await fetch('/api/ai/analyze-match', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resumeData: data, jobDescription: jobDesc })
+            });
+            const result = await response.json();
+            setMatches({
+                found: result.matched || [],
+                missing: result.missing || [],
+                score: result.score || 0,
+                summary: result.summary || ""
+            });
+        } catch (error) {
+            console.error("Analysis failed", error);
+        } finally {
+            setIsLoading(false);
         }
-
-        setMatches({ found, missing });
     };
+
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
@@ -53,7 +48,7 @@ export const JobMatcher = ({ data }: { data: FormDataState }) => {
             {isOpen && (
                 <div className="p-4">
                     <p className="text-xs text-slate-500 mb-3">
-                        Paste the job description you are applying for. We'll check if your resume matches the keywords.
+                        Paste the job description you are applying for. We&apos;ll check if your resume matches the keywords.
                     </p>
                     <textarea
                         value={jobDesc}
@@ -63,15 +58,34 @@ export const JobMatcher = ({ data }: { data: FormDataState }) => {
                     />
                     <button
                         onClick={analyzeJob}
-                        disabled={!jobDesc}
+                        disabled={!jobDesc || isLoading}
                         className="w-full py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
                     >
-                        <Search size={16} />
-                        Analyze Match
+                        {isLoading ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                Analyzing...
+                            </>
+                        ) : (
+                            <>
+                                <Search size={16} />
+                                Analyze Match
+                            </>
+                        )}
                     </button>
 
                     {matches && (
                         <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2">
+                             <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-100 mb-2">
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="text-xs font-bold text-indigo-700">Match Score</span>
+                                    <span className="text-sm font-black text-indigo-700">{matches.score}%</span>
+                                </div>
+                                <p className="text-[11px] text-slate-600 leading-relaxed italic">
+                                    &quot;{matches.summary}&quot;
+                                </p>
+                             </div>
+
                              <div className="p-3 bg-red-50 rounded-lg border border-red-100">
                                 <h4 className="text-xs font-bold text-red-700 mb-2 flex items-center gap-1">
                                     <XCircle size={14} /> Missing Keywords

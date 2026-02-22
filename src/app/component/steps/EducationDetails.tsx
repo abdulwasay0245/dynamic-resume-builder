@@ -1,12 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { AIAssistButton } from '../ai/AIAssistButton';
 
 interface EducationDetailsProps {
     data: {
         degName: string;
         university: string;
         educationYear: string;
-         education_summary: string;
+        education_summary: string;
     };
     updateData: (fields: Partial<EducationDetailsProps['data']>) => void;
 }
@@ -54,9 +55,34 @@ const EducationDetails: React.FC<EducationDetailsProps> = ({ data, updateData })
                     required
                 />
             </div>
-
+            <div className="flex flex-col gap-2 relative">
+                <div className="flex items-center justify-between mb-1">
+                    <label className="text-sm font-medium text-slate-600">Education Summary</label>
+                    <AIAssistButton 
+                        label="Enhance with AI"
+                        onAssist={async () => {
+                            const response = await fetch('/api/ai/improve', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ text: data.education_summary, type: 'education' })
+                            });
+                            const result = await response.json();
+                            if (result.improvedText) {
+                                updateData({ education_summary: result.improvedText });
+                            }
+                        }}
+                    />
+                </div>
+                <textarea
+                    value={data.education_summary}
+                    onChange={(e) => updateData({ education_summary: e.target.value })}
+                    className="p-3 border border-slate-200 rounded-lg h-24 focus:ring-2 focus:ring-indigo-500 outline-none transition-all resize-none"
+                    placeholder="Highlight your academic achievements..."
+                />
+            </div>
         </motion.div>
     );
 };
+
 
 export default EducationDetails;

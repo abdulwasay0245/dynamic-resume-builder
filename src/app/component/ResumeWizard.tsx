@@ -4,14 +4,14 @@ import React, { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import UserContext from '../context/UserContext';
-import { ChevronRight, ChevronLeft, Send } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Send, Save, Loader2 } from 'lucide-react';
 import PersonalDetails from './steps/PersonalDetails';
 import EducationDetails from './steps/EducationDetails';
 import ExperienceDetails from './steps/ExperienceDetails';
 import SkillsDetails from './steps/SkillsDetails';
 import Loader from './Loader';
-import { ResumeScore } from './ai/ResumeScore';
-import { JobMatcher } from './ai/JobMatcher';
+// Redundant imports removed
+
 
 // Define the shape of our form data
 export interface FormDataState {
@@ -64,8 +64,38 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
         }
     };
 
+    const [isSaving, setIsSaving] = useState(false);
+
+    const saveResume = async () => {
+        setIsSaving(true);
+        try {
+            const response = await fetch('/api/resumes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.name || 'Untitled Resume',
+                    templateId: 'modern', // Default for now
+                    content: formData
+                })
+            });
+            const result = await response.json();
+            if (result.id) {
+                // Success - maybe show a toast
+                console.log("Resume saved successfully!");
+            }
+        } catch (error) {
+            console.error("Failed to save resume", error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
     const handleSubmit = async () => {
         setIsLoading(true);
+        
+        // 1. Save to our database first
+        await saveResume();
+
         const singleSkills = formData.skills.split(',').map(skill => skill.trim());
         
         const payload = {
@@ -76,6 +106,7 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
             degName: formData.degName,
             university: formData.university,
             educationYear: formData.educationYear,
+            education_summary: formData.education_summary,
             position: formData.position,
             company: formData.company,
             time: formData.time,
@@ -84,6 +115,7 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
         };
 
         try {
+            // Keep the triage call for AI-enhanced summary generation
             const response = await fetch("http://127.0.0.1:8000/triage", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -91,24 +123,33 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
             });
 
             const result = await response.json();
-            if (result) {
-                setIsLoading(false);
-            }
-
+            
             const mergeData = {
                 ...payload,
+                job_summary: result.job_summary || [],
                 ...result,
             };
             
-            setForms(mergeData);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            setForms(mergeData as any);
+
             sessionStorage.setItem('resumeData', JSON.stringify(mergeData));
             router.push(`/${encodeURIComponent(formData.name)}`);
 
         } catch (error) {
-            console.error("error", error);
+            console.error("triage error", error);
+            // Fallback: Continue without triage if backend is down
+            const fallbackData = { ...payload, job_summary: [] };
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            setForms(fallbackData as any);
+            sessionStorage.setItem('resumeData', JSON.stringify(fallbackData));
+            router.push(`/${encodeURIComponent(formData.name)}`);
+
+        } finally {
             setIsLoading(false);
         }
     };
+
 
     if (isLoading) return <Loader />;
 
@@ -117,9 +158,25 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
             {/* Header / Stepper Progress */}
             <div className="bg-slate-50 p-6 border-b border-slate-100">
                 <div className="flex items-center justify-between mb-4">
-                    <h1 className="text-xl font-bold text-slate-800">{steps[currentStep].title}</h1>
-                    <span className="text-sm font-medium text-slate-500">Step {currentStep + 1} of {steps.length}</span>
+                    <div>
+                        <h1 className="text-xl font-bold text-slate-800">{steps[currentStep].title}</h1>
+                        <span className="text-sm font-medium text-slate-500">Step {currentStep + 1} of {steps.length}</span>
+                    </div>
+
+                    <button
+                        onClick={saveResume}
+                        disabled={isSaving}
+                        className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 border border-indigo-100 rounded-lg text-sm font-semibold hover:bg-indigo-50 transition-all shadow-sm disabled:opacity-50"
+                    >
+                        {isSaving ? (
+                            <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                            <Save size={16} />
+                        )}
+                        {isSaving ? "Saving..." : "Save Draft"}
+                    </button>
                 </div>
+
                 {/* Progress Bar */}
                 <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-6">
                     <motion.div 

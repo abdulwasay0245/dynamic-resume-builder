@@ -6,7 +6,6 @@ import {
   View,
   Document,
   StyleSheet,
-  Font,
 } from '@react-pdf/renderer';
 import FormData from '@/types/FormInput';
 

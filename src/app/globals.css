@@ -24,3 +24,37 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer base {
+  @media print {
+    @page {
+      size: A4;
+      margin: 0;
+    }
+    body {
+      background: white !important;
+      visibility: hidden !important;
+    }
+    #resume-to-print, #resume-to-print * {
+      visibility: visible !important;
+    }
+    #resume-to-print {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 210mm;
+      height: 297mm;
+      margin: 0;
+      padding: 0;
+      box-shadow: none !important;
+      background: white !important;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+    header, nav, button, footer, .lg\:hidden {
+      display: none !important;
+    }
+  }
+}
+
+

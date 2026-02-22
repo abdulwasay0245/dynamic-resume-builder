@@ -32,7 +32,7 @@ export const SkillSuggester: React.FC<SkillSuggesterProps> = ({ jobTitle, curren
         <div className="mt-4 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100">
             <div className="flex items-center gap-2 mb-3 text-indigo-700 font-semibold text-sm">
                 <Brain size={16} />
-                <span>AI Suggested Skills for "{jobTitle || "You"}"</span>
+                <span>AI Suggested Skills for &quot;{jobTitle || "You"}&quot;</span>
             </div>
             <div className="flex flex-wrap gap-2">
                 {filteredSuggestions.map((skill) => (

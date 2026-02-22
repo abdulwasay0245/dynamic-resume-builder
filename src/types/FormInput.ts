@@ -8,7 +8,8 @@ university: string;
 educationYear: string;
     position: string;
     education_summary: string;
-    job_summary:any
+    job_summary: string[];
+
 company: string;
 time: string;
 jobDescription: string;

@@ -18,9 +18,10 @@ const Header = () => {
         {/* Nav Links */}
         <nav className="hidden md:flex items-center gap-8">
           <Link href="/templates" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Templates</Link>
+          <Link href="/dashboard" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">My Resumes</Link>
           <Link href="#" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Examples</Link>
-          <Link href="#" className="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Pricing</Link>
         </nav>
+
 
         {/* Action Button */}
         <div className="flex items-center gap-4">

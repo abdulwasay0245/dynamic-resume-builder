@@ -55,8 +55,24 @@ const ExperienceDetails: React.FC<ExperienceDetailsProps> = ({ data, updateData 
                     required
                 />
             </div>
-            <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-slate-600">Job Description</label>
+            <div className="flex flex-col gap-2 relative">
+                <div className="flex items-center justify-between mb-1">
+                    <label className="text-sm font-medium text-slate-600">Job Description</label>
+                    <AIAssistButton 
+                        label="Improve with AI"
+                        onAssist={async () => {
+                            const response = await fetch('/api/ai/improve', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ text: data.jobDescription, type: 'experience' })
+                            });
+                            const result = await response.json();
+                            if (result.improvedText) {
+                                updateData({ jobDescription: result.improvedText });
+                            }
+                        }}
+                    />
+                </div>
                 <textarea
                     value={data.jobDescription}
                     onChange={(e) => updateData({ jobDescription: e.target.value })}
@@ -65,6 +81,7 @@ const ExperienceDetails: React.FC<ExperienceDetailsProps> = ({ data, updateData 
                     required
                 />
             </div>
+
         </motion.div>
     );
 };

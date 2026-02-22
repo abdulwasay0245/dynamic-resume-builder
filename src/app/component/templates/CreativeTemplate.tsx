@@ -4,7 +4,8 @@ import { FormDataState } from '../ResumeWizard';
 export const CreativeTemplate = ({ data }: { data: FormDataState }) => {
     const skillsArray = data.skills.split(',').map(s => s.trim()).filter(s => s);
     return (
-        <div className="w-full h-full bg-slate-50 shadow-lg flex flex-col text-xs font-sans aspect-[1/1.414]">
+        <div className="w-full bg-slate-50 shadow-lg flex flex-col text-xs font-sans min-h-[1100px]">
+
              <div className="bg-rose-500 text-white p-8">
                 <h1 className="text-4xl font-black mb-2 tracking-tighter">{data.name}</h1>
                 <p className="text-rose-100 font-medium tracking-widest uppercase">{data.position}</p>
