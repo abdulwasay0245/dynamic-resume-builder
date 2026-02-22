@@ -5,7 +5,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -13,7 +13,7 @@ export async function GET(
     }
 
     const userId = session.user.id;
-    const { id } = params;
+    const { id } = await params;
 
     try {
         const resume = await prisma.resume.findUnique({
@@ -33,7 +33,7 @@ export async function GET(
 
 export async function PATCH(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -41,7 +41,7 @@ export async function PATCH(
     }
 
     const userId = session.user.id;
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
     const { name, templateId, content } = body;
 
@@ -63,7 +63,7 @@ export async function PATCH(
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
@@ -71,7 +71,7 @@ export async function DELETE(
     }
 
     const userId = session.user.id;
-    const { id } = params;
+    const { id } = await params;
 
     try {
         await prisma.resume.delete({
