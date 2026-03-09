@@ -158,7 +158,7 @@ export default function Home() {
                         <Link href="#" className="hover:text-indigo-600 transition-colors">About Us</Link>
                     </div>
                     <p className="text-sm text-slate-400">
-                        © 2024 ResumeCraft. All rights reserved.
+                        © 2025 ResumeCraft. All rights reserved.
                     </p>
                 </div>
             </footer>

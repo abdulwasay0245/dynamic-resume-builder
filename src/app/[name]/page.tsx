@@ -2,7 +2,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useParams } from 'next/navigation';
 import UserContext from '../context/UserContext';
-import { FormDataState } from '../component/ResumeWizard';
+import { FormDataState } from '@/types/FormInput';
 import LiveResumePreview from '../component/LiveResumePreview';
 import { DownloadPDFButton } from '../component/DownloadPDFButton';
 import { Loader2 } from 'lucide-react';
@@ -17,7 +17,7 @@ export default function ResumePage() {
     useEffect(() => {
         // 1. Try Context
         if (Forms && Object.keys(Forms).length > 0) {
-            setResumeData(Forms as unknown as FormDataState);
+            setResumeData(Forms as FormDataState);
             return;
         }
 

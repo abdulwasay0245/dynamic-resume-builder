@@ -3,25 +3,9 @@ import UserContext from '../context/UserContext';
 import { ModernTemplate } from './templates/ModernTemplate';
 import { ProfessionalTemplate } from './templates/ProfessionalTemplate';
 import { CreativeTemplate } from './templates/CreativeTemplate';
-
 import { MinimalTemplate } from './templates/MinimalTemplate';
 import { CompactTemplate } from './templates/CompactTemplate';
-
-interface FormDataState {
-    name: string;
-    email: string;
-    number: string;
-    address: string;
-    degName: string;
-    university: string;
-    educationYear: string;
-    education_summary: string;
-    position: string;
-    company: string;
-    time: string;
-    jobDescription: string;
-    skills: string; 
-}
+import { FormDataState } from '@/types/FormInput';
 
 interface LiveResumePreviewProps {
     data: FormDataState;
@@ -51,8 +35,6 @@ const LiveResumePreview: React.FC<LiveResumePreviewProps> = ({ data }) => {
             {renderTemplate()}
         </div>
     );
-
 };
-
 
 export default LiveResumePreview;

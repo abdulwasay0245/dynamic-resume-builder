@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Gauge, AlertCircle, CheckCircle } from 'lucide-react';
-import { FormDataState } from '../ResumeWizard';
+import { FormDataState } from '@/types/FormInput';
 
 export const ResumeScore = ({ data }: { data: FormDataState }) => {
     const [score, setScore] = useState(0);
@@ -15,20 +15,29 @@ export const ResumeScore = ({ data }: { data: FormDataState }) => {
         if (data.email && data.number) newScore += 10;
         else newTips.push("Add contact details");
 
-        // Experience - Length Check
-        if (data.jobDescription?.length > 50) newScore += 20;
+        // Experience — check first entry for length
+        const firstExp = data.experiences?.[0];
+        if (firstExp?.jobDescription && firstExp.jobDescription.length > 50) newScore += 15;
         else newTips.push("Expand job description (> 50 chars)");
+
+        // Multiple experiences bonus
+        if (data.experiences.length >= 2) newScore += 5;
+        else newTips.push("Add more work experiences for impact");
 
         // Skills Check
         const skillsCount = data.skills.split(',').filter(s => s.trim()).length;
         if (skillsCount >= 5) newScore += 20;
         else newTips.push(`Add more skills (Goal: 5+, Current: ${skillsCount})`);
 
-        // Summary
-        if (data.education_summary?.length > 30) newScore += 10;
+        // Education summary
+        const firstEdu = data.education?.[0];
+        if (firstEdu?.education_summary && firstEdu.education_summary.length > 30) newScore += 10;
 
         // Position & Company
-        if (data.position && data.company) newScore += 20;
+        if (firstExp?.position && firstExp?.company) newScore += 20;
+
+        // Multiple education bonus
+        if (data.education.length >= 2) newScore += 5;
 
         setScore(Math.min(100, newScore));
         setTips(newTips);

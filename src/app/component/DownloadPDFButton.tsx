@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Download, Loader2, Printer } from 'lucide-react';
 import { toCanvas } from 'html-to-image';
 import { jsPDF } from 'jspdf';
+import { toast } from 'sonner';
 
 interface DownloadPDFButtonProps {
     targetId: string;
@@ -16,7 +17,7 @@ export const DownloadPDFButton: React.FC<DownloadPDFButtonProps> = ({ targetId, 
     const handleDownload = async () => {
         const element = document.getElementById(targetId);
         if (!element) {
-            alert("Resume preview not found. Please wait for the page to fully load.");
+            toast.error("Resume preview not found. Please wait for the page to fully load.");
             return;
         }
 
@@ -28,7 +29,7 @@ export const DownloadPDFButton: React.FC<DownloadPDFButtonProps> = ({ targetId, 
             // Use html-to-image (toCanvas) which is more accurate for modern CSS
             const canvas = await toCanvas(element, {
                 quality: 1,
-                pixelRatio: 2, // 2x resolution is usually enough for A4 without crashing memory
+                pixelRatio: 2,
                 backgroundColor: '#ffffff',
                 style: {
                     transform: 'none',
@@ -61,9 +62,10 @@ export const DownloadPDFButton: React.FC<DownloadPDFButtonProps> = ({ targetId, 
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
 
+            toast.success("Resume downloaded successfully!");
         } catch (error) {
             console.error("PDF Download failed:", error);
-            alert("Direct download failed. Please use the 'Browser Print' button next to it.");
+            toast.error("Direct download failed. Try the print button instead.");
         } finally {
             setIsLoading(false);
         }

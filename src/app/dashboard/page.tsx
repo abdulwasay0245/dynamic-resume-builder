@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../component/Header';
 import { motion } from 'framer-motion';
-import { FileText, Edit, Trash2, Plus, Clock, ExternalLink, Loader2 } from 'lucide-react';
+import { FileText, Edit, Trash2, Plus, Clock, ExternalLink, Loader2, Share2, Copy, Check, X } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface Resume {
     id: string;
@@ -14,6 +16,7 @@ interface Resume {
     templateId: string;
     content: string;
     updatedAt: string;
+    shareId?: string;
 }
 
 export default function Dashboard() {
@@ -21,6 +24,9 @@ export default function Dashboard() {
     const router = useRouter();
     const [resumes, setResumes] = useState<Resume[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [shareModal, setShareModal] = useState<{ resumeId: string; shareUrl: string } | null>(null);
+    const [isSharing, setIsSharing] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (status === 'unauthenticated') {
@@ -50,9 +56,42 @@ export default function Dashboard() {
         try {
             await fetch(`/api/resumes/${id}`, { method: 'DELETE' });
             setResumes(resumes.filter(r => r.id !== id));
+            toast.success("Resume deleted successfully");
         } catch (error) {
             console.error("Delete failed", error);
+            toast.error("Failed to delete resume");
         }
+    };
+
+    const shareResume = async (resumeId: string) => {
+        setIsSharing(true);
+        try {
+            const res = await fetch('/api/resumes/share', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ resumeId })
+            });
+            const data = await res.json();
+            if (data.shareUrl) {
+                const fullUrl = `${window.location.origin}${data.shareUrl}`;
+                setShareModal({ resumeId, shareUrl: fullUrl });
+                toast.success("Share link created!");
+            } else {
+                toast.error(data.error || "Failed to create share link");
+            }
+        } catch (error) {
+            console.error("Share failed", error);
+            toast.error("Failed to share resume");
+        } finally {
+            setIsSharing(false);
+        }
+    };
+
+    const copyToClipboard = async (text: string) => {
+        await navigator.clipboard.writeText(text);
+        setCopied(true);
+        toast.success("Link copied!");
+        setTimeout(() => setCopied(false), 2000);
     };
 
     if (status === 'loading' || isLoading) {
@@ -116,6 +155,14 @@ export default function Dashboard() {
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <button 
+                                            onClick={() => shareResume(resume.id)}
+                                            disabled={isSharing}
+                                            className="p-2 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 rounded-lg transition-all"
+                                            title="Share"
+                                        >
+                                            <Share2 size={16} />
+                                        </button>
+                                        <button 
                                             onClick={() => deleteResume(resume.id)}
                                             className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                                             title="Delete"
@@ -168,6 +215,50 @@ export default function Dashboard() {
                     </div>
                 )}
             </main>
+
+            {/* Share Modal */}
+            {shareModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md"
+                    >
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-bold text-slate-900">Share Resume</h3>
+                            <button
+                                onClick={() => { setShareModal(null); setCopied(false); }}
+                                className="p-2 hover:bg-slate-100 rounded-lg transition-all"
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        <div className="flex justify-center mb-6">
+                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <QRCodeSVG value={shareModal.shareUrl} size={160} level="M" />
+                            </div>
+                        </div>
+
+                        <p className="text-sm text-slate-500 text-center mb-4">Scan QR code or copy the link below</p>
+
+                        <div className="flex items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <input
+                                readOnly
+                                value={shareModal.shareUrl}
+                                className="flex-1 bg-transparent text-sm text-slate-600 outline-none min-w-0"
+                            />
+                            <button
+                                onClick={() => copyToClipboard(shareModal.shareUrl)}
+                                className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-all flex-shrink-0"
+                            >
+                                {copied ? <Check size={14} /> : <Copy size={14} />}
+                                {copied ? "Copied!" : "Copy"}
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,16 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-
-
+import { FormDataState } from '@/types/FormInput';
+import PhotoUpload from './PhotoUpload';
 
 interface PersonalDetailsProps {
-    data: {
-        name: string;
-        email: string;
-        number: string;
-        address: string;
-    };
-    updateData: (fields: Partial<PersonalDetailsProps['data']>) => void;
+    data: FormDataState;
+    updateData: (fields: Partial<FormDataState>) => void;
 }
 
 const PersonalDetails: React.FC<PersonalDetailsProps> = ({ data, updateData }) => {
@@ -23,6 +18,12 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({ data, updateData }) =
             className="flex flex-col gap-4"
         >
             <h2 className="text-xl font-bold text-slate-800 mb-2">Personal Details</h2>
+
+            <PhotoUpload
+                photo={data.profilePhoto}
+                onPhotoChange={(url) => updateData({ profilePhoto: url })}
+            />
+
             <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-slate-600">Full Name</label>
                 <input

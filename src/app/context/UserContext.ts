@@ -1,9 +1,9 @@
 import React from "react";
-import FormData from "@/types/FormInput";
+import { FormDataState } from "@/types/FormInput";
 
 interface UserContextType {
-    Forms: FormData | null;
-    setForms: (Forms: FormData | null) => void;
+    Forms: FormDataState | null;
+    setForms: (Forms: FormDataState | null) => void;
     selectedTemplate: string;
     setSelectedTemplate: (template: string) => void;
 }

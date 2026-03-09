@@ -8,27 +8,14 @@ import { ChevronRight, ChevronLeft, Send, Save, Loader2 } from 'lucide-react';
 import PersonalDetails from './steps/PersonalDetails';
 import EducationDetails from './steps/EducationDetails';
 import ExperienceDetails from './steps/ExperienceDetails';
+import ProjectsDetails from './steps/ProjectsDetails';
+import CertificationsDetails from './steps/CertificationsDetails';
 import SkillsDetails from './steps/SkillsDetails';
 import Loader from './Loader';
-// Redundant imports removed
+import { FormDataState } from '@/types/FormInput';
+import { toast } from 'sonner';
 
-
-// Define the shape of our form data
-export interface FormDataState {
-    name: string;
-    email: string;
-    number: string;
-    address: string;
-    degName: string;
-    university: string;
-    educationYear: string;
-    education_summary: string;
-    position: string;
-    company: string;
-    time: string;
-    jobDescription: string;
-    skills: string; 
-}
+export type { FormDataState } from '@/types/FormInput';
 
 interface ResumeWizardProps {
     formData: FormDataState;
@@ -40,6 +27,7 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
     const { setForms } = useContext(UserContext);
     const [isLoading, setIsLoading] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
+    const [isSaving, setIsSaving] = useState(false);
 
     const updateFormData = (fields: Partial<FormDataState>) => {
         setFormData(prev => ({ ...prev, ...fields }));
@@ -49,6 +37,8 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
         { title: "Personal Info", component: <PersonalDetails data={formData} updateData={updateFormData} /> },
         { title: "Education", component: <EducationDetails data={formData} updateData={updateFormData} /> },
         { title: "Experience", component: <ExperienceDetails data={formData} updateData={updateFormData} /> },
+        { title: "Projects", component: <ProjectsDetails data={formData} updateData={updateFormData} /> },
+        { title: "Certifications", component: <CertificationsDetails data={formData} updateData={updateFormData} /> },
         { title: "Skills", component: <SkillsDetails data={formData} updateData={updateFormData} /> },
     ];
 
@@ -64,8 +54,6 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
         }
     };
 
-    const [isSaving, setIsSaving] = useState(false);
-
     const saveResume = async () => {
         setIsSaving(true);
         try {
@@ -74,17 +62,17 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: formData.name || 'Untitled Resume',
-                    templateId: 'modern', // Default for now
+                    templateId: 'modern',
                     content: formData
                 })
             });
             const result = await response.json();
             if (result.id) {
-                // Success - maybe show a toast
-                console.log("Resume saved successfully!");
+                toast.success("Resume saved successfully!");
             }
         } catch (error) {
             console.error("Failed to save resume", error);
+            toast.error("Failed to save resume. Please try again.");
         } finally {
             setIsSaving(false);
         }
@@ -92,103 +80,58 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
 
     const handleSubmit = async () => {
         setIsLoading(true);
-        
-        // 1. Save to our database first
         await saveResume();
 
-        const singleSkills = formData.skills.split(',').map(skill => skill.trim());
-        
-        const payload = {
-            name: formData.name,
-            email: formData.email,
-            number: formData.number,
-            address: formData.address,
-            degName: formData.degName,
-            university: formData.university,
-            educationYear: formData.educationYear,
-            education_summary: formData.education_summary,
-            position: formData.position,
-            company: formData.company,
-            time: formData.time,
-            jobDescription: formData.jobDescription,
-            singleSkills,
-        };
-
         try {
-            // Keep the triage call for AI-enhanced summary generation
-            const response = await fetch("http://127.0.0.1:8000/triage", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-            
-            const mergeData = {
-                ...payload,
-                job_summary: result.job_summary || [],
-                ...result,
-            };
-            
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setForms(mergeData as any);
-
-            sessionStorage.setItem('resumeData', JSON.stringify(mergeData));
+            setForms(formData);
+            sessionStorage.setItem('resumeData', JSON.stringify(formData));
             router.push(`/${encodeURIComponent(formData.name)}`);
-
         } catch (error) {
-            console.error("triage error", error);
-            // Fallback: Continue without triage if backend is down
-            const fallbackData = { ...payload, job_summary: [] };
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setForms(fallbackData as any);
-            sessionStorage.setItem('resumeData', JSON.stringify(fallbackData));
+            console.error("Submit error", error);
+            toast.error("Something went wrong. Redirecting anyway...");
+            sessionStorage.setItem('resumeData', JSON.stringify(formData));
             router.push(`/${encodeURIComponent(formData.name)}`);
-
         } finally {
             setIsLoading(false);
         }
     };
 
-
     if (isLoading) return <Loader />;
 
     return (
         <div className="w-full bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col h-[600px]">
-            {/* Header / Stepper Progress */}
+            {/* Header / Stepper */}
             <div className="bg-slate-50 p-6 border-b border-slate-100">
                 <div className="flex items-center justify-between mb-4">
                     <div>
                         <h1 className="text-xl font-bold text-slate-800">{steps[currentStep].title}</h1>
                         <span className="text-sm font-medium text-slate-500">Step {currentStep + 1} of {steps.length}</span>
                     </div>
-
                     <button
                         onClick={saveResume}
                         disabled={isSaving}
                         className="flex items-center gap-2 px-4 py-2 bg-white text-indigo-600 border border-indigo-100 rounded-lg text-sm font-semibold hover:bg-indigo-50 transition-all shadow-sm disabled:opacity-50"
                     >
-                        {isSaving ? (
-                            <Loader2 size={16} className="animate-spin" />
-                        ) : (
-                            <Save size={16} />
-                        )}
+                        {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                         {isSaving ? "Saving..." : "Save Draft"}
                     </button>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-6">
-                    <motion.div 
-                        className="h-full bg-indigo-600"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-                        transition={{ duration: 0.3 }}
-                    />
+                {/* Step Dots */}
+                <div className="flex items-center gap-1.5 mb-2">
+                    {steps.map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentStep(i)}
+                            className={`h-2 rounded-full transition-all ${
+                                i === currentStep ? 'bg-indigo-600 w-8' : i < currentStep ? 'bg-indigo-300 w-4' : 'bg-slate-200 w-4'
+                            }`}
+                        />
+                    ))}
                 </div>
             </div>
 
-            {/* Content Area */}
+            {/* Content */}
             <div className="flex-1 p-6 overflow-y-auto">
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -204,7 +147,7 @@ const ResumeWizard: React.FC<ResumeWizardProps> = ({ formData, setFormData }) =>
                 </AnimatePresence>
             </div>
 
-            {/* Footer / Navigation */}
+            {/* Footer */}
             <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center">
                 <button
                     onClick={handleBack}

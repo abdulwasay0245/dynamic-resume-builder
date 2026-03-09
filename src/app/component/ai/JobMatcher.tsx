@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Target, Search, CheckCircle, XCircle, ChevronDown, ChevronUp } from 'lucide-react';
-import { FormDataState } from '../ResumeWizard';
+import { FormDataState } from '@/types/FormInput';
 
 export const JobMatcher = ({ data }: { data: FormDataState }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +30,6 @@ export const JobMatcher = ({ data }: { data: FormDataState }) => {
             setIsLoading(false);
         }
     };
-
 
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">

@@ -1,12 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-
+import { FormDataState } from '@/types/FormInput';
 
 interface SkillsDetailsProps {
-    data: {
-        skills: string;
-    };
-    updateData: (fields: Partial<SkillsDetailsProps['data']>) => void;
+    data: FormDataState;
+    updateData: (fields: Partial<FormDataState>) => void;
 }
 
 const SkillsDetails: React.FC<SkillsDetailsProps> = ({ data, updateData }) => {

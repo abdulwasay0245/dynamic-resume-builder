@@ -1,14 +1,13 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import UserContext from './UserContext'
-import FormData from '@/types/FormInput'
+import { FormDataState } from '@/types/FormInput'
 
 const UserContextProvider = ({children}:{children: React.ReactNode}) => {
-  const [Forms, setForms] = useState<FormData| null>(null);
+  const [Forms, setForms] = useState<FormDataState | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
 
   useEffect(() => {
-    // Load from local storage on mount
     const savedTemplate = localStorage.getItem('selectedTemplate');
     if (savedTemplate) {
         setSelectedTemplate(savedTemplate);
@@ -23,7 +22,7 @@ const UserContextProvider = ({children}:{children: React.ReactNode}) => {
   return (
       <UserContext.Provider value={{Forms, setForms, selectedTemplate, setSelectedTemplate: handleSetTemplate}}>
           {children}
-   </UserContext.Provider>
+     </UserContext.Provider>
   )
 }
 

@@ -1,93 +1,126 @@
 'use client';
-import React, { useContext } from 'react';
+
+import React, { useState } from 'react';
 import Header from '../component/Header';
+import { motion } from 'framer-motion';
 import { ModernTemplate } from '../component/templates/ModernTemplate';
 import { ProfessionalTemplate } from '../component/templates/ProfessionalTemplate';
 import { CreativeTemplate } from '../component/templates/CreativeTemplate';
-import { FormDataState } from '../component/ResumeWizard';
-import UserContext from '../context/UserContext';
-import { useRouter } from 'next/navigation';
-import { CheckCircle } from 'lucide-react';
-
-const dummyData: FormDataState = {
-    name: "Alex Doe",
-    position: "Software Engineer",
-    email: "alex@example.com",
-    number: "+1 234 567 890",
-    address: "San Francisco, CA",
-    degName: "B.S. Computer Science",
-    university: "Stanford University",
-    educationYear: "2020 - 2024",
-    education_summary: "Passionate engineer with a focus on building scalable web applications.",
-    company: "Tech Corp",
-    time: "2024 - Present",
-    jobDescription: "Developed key features for the main product suite.",
-    skills: "React, Next.js, TypeScript, Tailwind",
-};
-
 import { MinimalTemplate } from '../component/templates/MinimalTemplate';
 import { CompactTemplate } from '../component/templates/CompactTemplate';
+import { FormDataState } from '@/types/FormInput';
 
-const templates = [
-    { id: 'modern', name: 'Modern', component: ModernTemplate },
-    { id: 'professional', name: 'Professional', component: ProfessionalTemplate },
-    { id: 'creative', name: 'Creative', component: CreativeTemplate },
-    { id: 'minimal', name: 'Minimal Mono', component: MinimalTemplate },
-    { id: 'compact', name: 'Compact', component: CompactTemplate },
-];
-
-const TemplatesPage = () => {
-    const { selectedTemplate, setSelectedTemplate } = useContext(UserContext);
-    const router = useRouter();
-
-    const handleSelect = (id: string) => {
-        setSelectedTemplate(id);
-        router.push('/buildResume');
-    };
-
-    return (
-        <div className="min-h-screen bg-slate-50 font-sans pt-20 pb-20">
-            <Header />
-            
-            <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center mb-12">
-                    <h1 className="text-4xl font-bold text-slate-900 mb-4">Choose Your Template</h1>
-                    <p className="text-slate-600">Select a design that best fits your style and profession.</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {templates.map((template) => (
-                        <div key={template.id} className="group relative flex flex-col gap-4">
-                            <div 
-                                onClick={() => handleSelect(template.id)}
-                                className={`relative aspect-[1/1.414] rounded-xl overflow-hidden shadow-xl transition-all cursor-pointer border-4 ${selectedTemplate === template.id ? 'border-indigo-600 ring-4 ring-indigo-200' : 'border-transparent hover:scale-[1.02] hover:shadow-2xl'}`}
-                            >
-                                <div className="absolute inset-0 pointer-events-none scale-[0.4] origin-top-left w-[250%] h-[250%] bg-white">
-                                    <template.component data={dummyData} />
-                                </div>
-                                
-                                {/* Overlay for hover */}
-                                <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                    <button className="bg-white text-slate-900 font-bold py-2 px-6 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all">
-                                        Use Template
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-between items-center px-2">
-                                <h3 className="font-bold text-slate-900 text-lg">{template.name}</h3>
-                                {selectedTemplate === template.id && (
-                                    <span className="flex items-center gap-1 text-indigo-600 font-medium text-sm">
-                                        <CheckCircle size={16} /> Selected
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
+const dummyData: FormDataState = {
+    name: "Jordan Mitchell",
+    email: "jordan@example.com",
+    number: "+1 555 123 4567",
+    address: "San Francisco, CA",
+    profilePhoto: "",
+    education: [
+        {
+            id: "edu-1",
+            degName: "B.S. Computer Science",
+            university: "Stanford University",
+            educationYear: "2020",
+            education_summary: "Graduated with honors. Focused on distributed systems and machine learning. Published 2 research papers on large-scale data processing."
+        },
+        {
+            id: "edu-2",
+            degName: "M.S. Data Science",
+            university: "MIT",
+            educationYear: "2022",
+            education_summary: "Thesis on real-time anomaly detection in streaming data pipelines."
+        }
+    ],
+    experiences: [
+        {
+            id: "exp-1",
+            position: "Senior Software Engineer",
+            company: "TechCorp",
+            time: "2022 - Present",
+            jobDescription: "Led a team of 6 engineers building a real-time analytics platform processing 10M+ events/day. Reduced latency by 40% through system redesign."
+        },
+        {
+            id: "exp-2",
+            position: "Software Engineer",
+            company: "DataFlow Inc.",
+            time: "2020 - 2022",
+            jobDescription: "Built microservices for data ingestion pipeline using Go and Kafka. Implemented CI/CD with 95% test coverage."
+        }
+    ],
+    projects: [
+        {
+            id: "proj-1",
+            projectName: "Open Source CLI Tool",
+            projectUrl: "https://github.com/jordan/cli-tool",
+            projectDescription: "Built a CLI tool for automated code reviews with 2,000+ GitHub stars."
+        }
+    ],
+    certifications: [
+        {
+            id: "cert-1",
+            certName: "AWS Solutions Architect",
+            certIssuer: "Amazon Web Services",
+            certYear: "2023"
+        }
+    ],
+    skills: "React, TypeScript, Node.js, Go, Python, Kafka, PostgreSQL, Docker, AWS, Terraform"
 };
 
-export default TemplatesPage;
+const templates = [
+    { name: "Modern", component: ModernTemplate },
+    { name: "Professional", component: ProfessionalTemplate },
+    { name: "Creative", component: CreativeTemplate },
+    { name: "Minimal", component: MinimalTemplate },
+    { name: "Compact", component: CompactTemplate },
+];
+
+export default function TemplatesPage() {
+    const [selectedIndex, setSelectedIndex] = useState(0);
+
+    const SelectedTemplate = templates[selectedIndex].component;
+
+    return (
+        <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
+            <Header />
+
+            <main className="max-w-7xl mx-auto px-6 pt-24 pb-12">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center mb-8"
+                >
+                    <h1 className="text-3xl font-bold mb-2">Choose Your Template</h1>
+                    <p className="text-slate-500">Preview all templates with sample data. Pick the one that fits your style.</p>
+                </motion.div>
+
+                {/* Template Selector */}
+                <div className="flex justify-center gap-3 mb-8 flex-wrap">
+                    {templates.map((t, i) => (
+                        <button
+                            key={t.name}
+                            onClick={() => setSelectedIndex(i)}
+                            className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                                i === selectedIndex
+                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
+                                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                            }`}
+                        >
+                            {t.name}
+                        </button>
+                    ))}
+                </div>
+
+                {/* Preview */}
+                <motion.div
+                    key={selectedIndex}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-[210mm] mx-auto bg-white shadow-2xl rounded-sm overflow-hidden"
+                >
+                    <SelectedTemplate data={dummyData} />
+                </motion.div>
+            </main>
+        </div>
+    );
+}
